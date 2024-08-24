@@ -22,13 +22,28 @@ class ApartamentoController {
     }
     //POST
     static async cadastrarApartamento (req, res){
-        try{
-            const novoApartamento = await apartamento.create(req.body)
-            res.status(201).json({message: "criado com sucesso", apartamento:novoApartamento})
-        }catch(erro){
-            res.status(500).json({message: `${erro.message} - falha ao cadastrar`})
+        
+        try {
+            // Criação do objeto apartamento com os dados do corpo da requisição e os caminhos das imagens
+            const novoApartamento = await apartamento.create({
+                ...req.body,  // Inclui todas as strings enviadas no corpo da requisição
+                imagemprincipal: req.files.imagemprincipal ? req.files.imagemprincipal[0].path : '',
+                imagensparaslide1: req.files.imagensparaslide1 ? req.files.imagensparaslide1[0].path : '',
+                imagensparaslide2: req.files.imagensparaslide2 ? req.files.imagensparaslide2[0].path : '',
+                imagensparaslide3: req.files.imagensparaslide3 ? req.files.imagensparaslide3[0].path : ''
+            });
+    
+            res.status(201).json({ message: "Apartamento criado com sucesso", apartamento: novoApartamento });
+        } catch (erro) {
+            res.status(500).json({ message: `${erro.message} - Falha ao cadastrar` });
         }
-
+        
+        // try{
+        //     const novoApartamento = await apartamento.create(req.body)
+        //     res.status(201).json({message: "criado com sucesso", apartamento:novoApartamento})
+        // }catch(erro){
+        //     res.status(500).json({message: `${erro.message} - falha ao cadastrar`})
+        // }
     }
     //PUT
     static async atualizarApartamento (req, res){
